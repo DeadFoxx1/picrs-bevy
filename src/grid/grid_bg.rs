@@ -12,7 +12,7 @@ impl Plugin for GridBgPlugin {
 const GRID_BG_COLOR: [f32; 3] = [0., 0., 0.];
 
 #[derive(Component)]
-struct Bg;
+pub struct Bg;
 
 fn draw_board_bg(
     bg_dimensions: Res<BgDimensions>,
