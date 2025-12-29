@@ -11,7 +11,7 @@ impl Plugin for LayoutPlugin {
     }
 }
 
-const SIDE_MARGIN_RATIO: (f32, f32) = (2., 1.); //2:1
+const SIDE_MARGIN_RATIO: (f32, f32) = (9., 1.); //2:1
 const TOP_MARGIN_PERCENT: f32 = 0.05; //5% of the screen's height per margin
 
 //in the case that screen width < screen height
@@ -47,7 +47,7 @@ impl WindowDimensions {
     }
 }
 
-fn init_dimensions(window: Single<&Window, With<PrimaryWindow>>, mut commands: Commands) {
+pub fn init_dimensions(window: Single<&Window, With<PrimaryWindow>>, mut commands: Commands) {
     commands.insert_resource(WindowDimensions::new(window.height(), window.width()));
 }
 
