@@ -26,10 +26,11 @@ impl CellDimensions {
             / (BORDER_TO_CELL_FG_RATIO.1 + BORDER_TO_CELL_FG_RATIO.0))
             / n as f32)
             / 2.;
+        let border_size = border_size + ((n - 2) as f32 * border_size) / n as f32;
         let fg_size = (BORDER_TO_CELL_FG_RATIO.1
             / (BORDER_TO_CELL_FG_RATIO.0 + BORDER_TO_CELL_FG_RATIO.1))
-            / n as f32
-            + (((n - 1) as f32 * border_size) / n as f32);
+            / n as f32;
+        //+ (((n - 1) as f32 * border_size) / n as f32);
 
         let top_of_board = 1. / 2.;
         let left_of_board = -top_of_board;
