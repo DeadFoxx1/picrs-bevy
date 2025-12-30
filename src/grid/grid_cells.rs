@@ -27,7 +27,7 @@ fn draw_board_cells(
     mut material: ResMut<Assets<ColorMaterial>>,
 ) {
     let fg_size = cell_dimensions.fg_size;
-    let total_size = cell_dimensions.total_size;
+    let border_size = cell_dimensions.border_size;
     let top_of_board = cell_dimensions.top_of_board;
     let left_of_board = cell_dimensions.left_of_board;
     for x in 0..cell_count.ncol {
@@ -37,8 +37,12 @@ fn draw_board_cells(
                 Mesh2d(mesh.add(Rectangle::default())),
                 MeshMaterial2d(material.add(Color::srgb_from_array(CELL_FG_COLOR))),
                 Transform::from_translation(Vec3::new(
-                    left_of_board + (total_size / 2.) + (total_size * x as f32),
-                    top_of_board - (total_size / 2.) - (total_size * y as f32),
+                    left_of_board
+                        + (border_size + fg_size / 2.)
+                        + (border_size + fg_size) * x as f32,
+                    top_of_board
+                        - (border_size + fg_size / 2.)
+                        - (border_size + fg_size) * y as f32,
                     1.,
                 ))
                 .with_scale(Vec3::new(fg_size, fg_size, 1.)),
