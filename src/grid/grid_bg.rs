@@ -1,5 +1,5 @@
 use crate::layout::bg_layout::{BgDimensions, init_bg_dimensions};
-use bevy::prelude::*;
+use bevy::{prelude::*, window::WindowResized};
 
 pub struct GridBgPlugin;
 impl Plugin for GridBgPlugin {
@@ -41,17 +41,19 @@ fn draw_board_bg(
 
 fn update_board_bg(
     mut bg: Single<&mut Transform, With<Bg>>,
+    mut resized_events: MessageReader<WindowResized>,
     bg_dimensions: Res<BgDimensions>,
 ) {
-    let left_of_screen = bg_dimensions.left_of_screen;
-    let left_margin = bg_dimensions.left_margin;
-    let size = bg_dimensions.board_size;
-    let top_of_screen = bg_dimensions.top_of_screen;
-    let top_margin = bg_dimensions.top_margin;
+    for _event in resized_events.read() {
+        let left_of_screen = bg_dimensions.left_of_screen;
+        let left_margin = bg_dimensions.left_margin;
+        let size = bg_dimensions.board_size;
+        let top_of_screen = bg_dimensions.top_of_screen;
+        let top_margin = bg_dimensions.top_margin;
 
-    bg.translation.x = left_of_screen + left_margin + (size / 2.);
-    bg.translation.y = top_of_screen - top_margin - (size / 2.);
-    bg.scale.x = size;
-    bg.scale.y = size;
+        bg.translation.x = left_of_screen + left_margin + (size / 2.);
+        bg.translation.y = top_of_screen - top_margin - (size / 2.);
+        bg.scale.x = size;
+        bg.scale.y = size;
+    }
 }
-

@@ -5,12 +5,11 @@ use crate::{CellCount, layout::bg_layout::init_bg_dimensions};
 pub struct CellsLayoutPlugin;
 impl Plugin for CellsLayoutPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, init_cell_dimensions.after(init_bg_dimensions))
-            .add_systems(Update, update_cell_dimensions);
+        app.add_systems(Startup, init_cell_dimensions.after(init_bg_dimensions));
     }
 }
 
-const BORDER_TO_CELL_FG_RATIO: (f32, f32) = (1., 9.); //1:6
+const BORDER_TO_CELL_FG_RATIO: (f32, f32) = (1., 20.); //1:6
 
 #[derive(Resource)]
 pub struct CellDimensions {
@@ -46,14 +45,4 @@ impl CellDimensions {
 
 pub fn init_cell_dimensions(cell_count: Res<CellCount>, mut commands: Commands) {
     commands.insert_resource(CellDimensions::new(cell_count.nrow, cell_count.ncol));
-}
-
-fn update_cell_dimensions(
-    mut cell_dimensions: ResMut<CellDimensions>,
-    mut resized_events: MessageReader<WindowResized>,
-    cell_count: Res<CellCount>,
-) {
-    for _event in resized_events.read() {
-        *cell_dimensions = CellDimensions::new(cell_count.nrow, cell_count.ncol);
-    }
 }
