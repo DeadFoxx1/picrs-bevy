@@ -2,34 +2,43 @@ use bevy::prelude::*;
 
 use crate::{
     CellCount,
-    draw::grid::grid_bg::Bg,
-    layout::cells_layout::{CellDimensions, init_cell_dimensions},
+    draw::grid::grid_bg::{Bg, draw_board_bg},
 };
 
 pub struct GridCellsPlugin;
 impl Plugin for GridCellsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, draw_board_cells.after(init_cell_dimensions));
+        app.add_systems(Startup, draw_board_cells.after(draw_board_bg));
     }
 }
 
 const CELL_FG_COLOR: [f32; 3] = [1., 1., 1.];
+const BORDER_TO_CELL_FG_RATIO: (f32, f32) = (1., 20.); //1:6
 
 #[derive(Component)]
 struct Cell;
 
 fn draw_board_cells(
-    cell_dimensions: Res<CellDimensions>,
     cell_count: Res<CellCount>,
     board_bg: Single<Entity, With<Bg>>,
     mut commands: Commands,
     mut mesh: ResMut<Assets<Mesh>>,
     mut material: ResMut<Assets<ColorMaterial>>,
 ) {
-    let fg_size = cell_dimensions.fg_size;
-    let border_size = cell_dimensions.border_size;
-    let top_of_board = cell_dimensions.top_of_board;
-    let left_of_board = cell_dimensions.left_of_board;
+    let n = usize::max(cell_count.nrow, cell_count.ncol);
+    let border_size = ((BORDER_TO_CELL_FG_RATIO.0
+        / (BORDER_TO_CELL_FG_RATIO.1 + BORDER_TO_CELL_FG_RATIO.0))
+        / n as f32)
+        / 2.;
+    let border_size = border_size + ((n - 2) as f32 * border_size) / n as f32;
+    let fg_size = (BORDER_TO_CELL_FG_RATIO.1
+        / (BORDER_TO_CELL_FG_RATIO.0 + BORDER_TO_CELL_FG_RATIO.1))
+        / n as f32;
+    //+ (((n - 1) as f32 * border_size) / n as f32);
+
+    let top_of_board = 1. / 2.;
+    let left_of_board = -top_of_board;
+
     for x in 0..cell_count.ncol {
         for y in 0..cell_count.nrow {
             commands.spawn((
