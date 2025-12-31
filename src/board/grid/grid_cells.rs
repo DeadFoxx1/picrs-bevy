@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::{
     CellCount,
-    draw::grid::grid_bg::{Bg, draw_board_bg},
+    board::grid::grid_bg::{Bg, draw_board_bg},
 };
 
 pub struct GridCellsPlugin;

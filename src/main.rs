@@ -1,6 +1,6 @@
-mod draw;
+mod board;
 
-use crate::draw::DrawPlugin;
+use crate::board::BoardPlugin;
 use bevy::prelude::*;
 
 const START_NROW: usize = 10;
@@ -8,7 +8,7 @@ const START_NCOL: usize = 10;
 
 fn main() {
     let mut app = App::new();
-    app.add_plugins((DefaultPlugins, DrawPlugin))
+    app.add_plugins((DefaultPlugins, BoardPlugin))
         .add_systems(Startup, init).insert_resource(CellCount{nrow: START_NROW, ncol: START_NCOL})
         .run();
 }

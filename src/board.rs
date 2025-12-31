@@ -4,8 +4,8 @@ pub mod hints;
 use bevy::prelude::*;
 use grid::GridPlugin;
 
-pub struct DrawPlugin;
-impl Plugin for DrawPlugin{
+pub struct BoardPlugin;
+impl Plugin for BoardPlugin{
     fn build(&self, app: &mut App) {
         app.add_plugins(GridPlugin);
     }

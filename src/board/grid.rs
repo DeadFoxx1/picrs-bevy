@@ -1,5 +1,5 @@
-pub mod grid_bg;
-pub mod grid_cells;
+mod grid_bg;
+mod grid_cells;
 
 use bevy::prelude::*;
 use grid_bg::GridBgPlugin;
