@@ -11,8 +11,9 @@ impl Plugin for BgLayoutPlugin {
     }
 }
 
-const SIDE_MARGIN_RATIO: (f32, f32) = (9., 1.); //2:1
+const SIDE_MARGIN_RATIO: (f32, f32) = (9., 1.); //9:1
 const TOP_MARGIN_PERCENT: f32 = 0.05; //5% of the screen's height per margin
+const TOP_HINT_PERCENT: f32 = 0.25;
 
 //in the case that screen width < screen height
 const MIN_SIZE_OF_SQUARE_PERCENT: f32 = 0.70; //70% of the screens width
@@ -20,6 +21,7 @@ const MIN_SIZE_OF_SQUARE_PERCENT: f32 = 0.70; //70% of the screens width
 #[derive(Resource)]
 pub struct BgDimensions {
     pub top_margin: f32,
+    pub top_hint: f32,
     pub board_size: f32,
     pub left_margin: f32,
     pub top_of_screen: f32,
@@ -28,8 +30,9 @@ pub struct BgDimensions {
 impl BgDimensions {
     fn new(window_height: f32, window_width: f32) -> Self {
         let top_margin = window_height * TOP_MARGIN_PERCENT;
+        let top_hint = window_height * TOP_HINT_PERCENT;
         let board_size = f32::min(
-            window_height - (2. * top_margin),
+            window_height - (2. * top_margin) - top_hint,
             window_width * MIN_SIZE_OF_SQUARE_PERCENT,
         );
         let left_margin = ((window_width - board_size) * SIDE_MARGIN_RATIO.0)
@@ -39,6 +42,7 @@ impl BgDimensions {
 
         BgDimensions {
             top_margin,
+            top_hint,
             board_size,
             left_margin,
             top_of_screen,

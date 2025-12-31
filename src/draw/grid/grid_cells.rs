@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::{
     CellCount,
-    grid::grid_bg::Bg,
+    draw::grid::grid_bg::Bg,
     layout::cells_layout::{CellDimensions, init_cell_dimensions},
 };
 

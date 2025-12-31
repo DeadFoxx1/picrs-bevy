@@ -25,6 +25,7 @@ fn draw_board_bg(
     let size = bg_dimensions.board_size;
     let top_of_screen = bg_dimensions.top_of_screen;
     let top_margin = bg_dimensions.top_margin;
+    let top_hint = bg_dimensions.top_hint;
     commands.spawn((
         Bg,
         Mesh2d(mesh.add(Rectangle::default())),
@@ -32,7 +33,7 @@ fn draw_board_bg(
         Transform::from_xyz(
             //account for origin of mesh being in the center with (size/2.)
             left_of_screen + left_margin + (size / 2.),
-            top_of_screen - top_margin - (size / 2.),
+            top_of_screen - top_margin - top_hint - (size / 2.),
             0., //set the bottom of the z index
         )
         .with_scale(Vec3::new(size, size, 0.)),
@@ -50,9 +51,10 @@ fn update_board_bg(
         let size = bg_dimensions.board_size;
         let top_of_screen = bg_dimensions.top_of_screen;
         let top_margin = bg_dimensions.top_margin;
+        let top_hint = bg_dimensions.top_hint;
 
         bg.translation.x = left_of_screen + left_margin + (size / 2.);
-        bg.translation.y = top_of_screen - top_margin - (size / 2.);
+        bg.translation.y = top_of_screen - top_hint - top_margin - (size / 2.);
         bg.scale.x = size;
         bg.scale.y = size;
     }
