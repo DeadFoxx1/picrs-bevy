@@ -1,6 +1,6 @@
 use super::{
-    LEFT_HINTS_PERCENT, GRID_BG_COLOR, HINT_BG_COLOR, MIN_SIZE_OF_SQUARE_PERCENT,
-    SIDE_MARGIN_RATIO, TOP_HINTS_PERCENT, TOP_MARGIN_PERCENT,
+    GRID_BG_COLOR, HINT_BG_COLOR, HORI_MARGIN_PERCENT, LEFT_HINTS_PERCENT, SIDE_MARGIN_RATIO,
+    TOP_HINTS_PERCENT, VERT_MARGIN_PERCENT,
 };
 use bevy::{prelude::*, window::WindowResized};
 
@@ -59,10 +59,12 @@ fn update_bg(
     for event in resized_events.read() {
         let window_width = event.width;
         let window_height = event.height;
-        let top_margin = window_height * TOP_MARGIN_PERCENT;
+
+        let top_margin = window_height * VERT_MARGIN_PERCENT / 2.;
+
         let grid_size = f32::min(
-            window_height - (2. * top_margin),
-            window_width * MIN_SIZE_OF_SQUARE_PERCENT,
+            window_height * (1. - VERT_MARGIN_PERCENT),
+            window_width * (1. - HORI_MARGIN_PERCENT),
         );
         let top_hint = grid_size * TOP_HINTS_PERCENT;
         let left_hint = grid_size * LEFT_HINTS_PERCENT;
