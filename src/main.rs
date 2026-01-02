@@ -3,8 +3,8 @@ mod board;
 use crate::board::BoardPlugin;
 use bevy::prelude::*;
 
-const START_NROW: usize = 10;
-const START_NCOL: usize = 10;
+const START_NROW: usize = 5;
+const START_NCOL: usize = 5;
 
 fn main() {
     let mut app = App::new();

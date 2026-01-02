@@ -28,7 +28,7 @@ fn draw_board_cells(
         / (BORDER_TO_CELL_FG_RATIO.1 + BORDER_TO_CELL_FG_RATIO.0))
         / n as f32)
         / 2.;
-    let border_size = border_size + ((n - 2) as f32 * border_size) / n as f32;
+    let border_size = border_size + ((n - 1) as f32 * border_size) / (n as f32 + 1.);
     let fg_size = (BORDER_TO_CELL_FG_RATIO.1
         / (BORDER_TO_CELL_FG_RATIO.0 + BORDER_TO_CELL_FG_RATIO.1))
         / n as f32;
