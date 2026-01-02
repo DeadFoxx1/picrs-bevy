@@ -68,13 +68,14 @@ fn update_bg(
         );
         let top_hint = grid_size * TOP_HINTS_PERCENT;
         let left_hint = grid_size * LEFT_HINTS_PERCENT;
+
         let grid_size = grid_size - top_hint;
-        let left_margin = ((window_width - grid_size) * SIDE_MARGIN_RATIO.0)
+        let left_margin = ((window_width - grid_size - left_hint) * SIDE_MARGIN_RATIO.0)
             / (SIDE_MARGIN_RATIO.0 + SIDE_MARGIN_RATIO.1);
         let top_of_screen = window_height / 2.;
         let left_of_screen = -(window_width / 2.);
 
-        grid_bg.translation.x = left_of_screen + left_margin + (grid_size / 2.);
+        grid_bg.translation.x = left_of_screen + left_hint + left_margin + (grid_size / 2.);
         grid_bg.translation.y = top_of_screen - top_hint - top_margin - (grid_size / 2.);
         grid_bg.scale.x = grid_size;
         grid_bg.scale.y = grid_size;
