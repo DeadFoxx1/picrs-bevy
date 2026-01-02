@@ -14,8 +14,7 @@ impl Plugin for BoardPlugin {
 }
 pub const GRID_BG_COLOR: [f32; 3] = [0., 0., 0.];
 
-pub const TOP_HINTS_PERCENT: f32 = 0.25;
-pub const LEFT_HINTS_PERCENT: f32 = 0.25;
+pub const HINTS_PERCENT: f32 = 0.25;
 pub const VERT_MARGIN_PERCENT: f32 = 0.05; //5% of the screen's height per margin
 pub const HORI_MARGIN_PERCENT: f32 = 0.30;
 pub const SIDE_MARGIN_RATIO: (f32, f32) = (1., 1.); //9:1
