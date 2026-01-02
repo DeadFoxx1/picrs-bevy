@@ -9,7 +9,11 @@ const START_NCOL: usize = 10;
 fn main() {
     let mut app = App::new();
     app.add_plugins((DefaultPlugins, BoardPlugin))
-        .add_systems(Startup, init).insert_resource(CellCount{nrow: START_NROW, ncol: START_NCOL})
+        .add_systems(Startup, init)
+        .insert_resource(CellCount {
+            nrow: START_NROW,
+            ncol: START_NCOL,
+        })
         .run();
 }
 
@@ -20,5 +24,5 @@ fn init(mut commands: Commands) {
 #[derive(Resource)]
 pub struct CellCount {
     nrow: usize,
-    ncol: usize
+    ncol: usize,
 }

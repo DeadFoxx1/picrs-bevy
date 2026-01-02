@@ -1,26 +1,24 @@
+use super::{BORDER_TO_CELL_FG_RATIO, CELL_FG_COLOR};
 use bevy::prelude::*;
 
 use crate::{
     CellCount,
-    board::grid::grid_bg::{Bg, draw_board_bg},
+    board::bg::{GridBg, draw_board_bg},
 };
 
-pub struct GridCellsPlugin;
-impl Plugin for GridCellsPlugin {
+pub struct CellsPlugin;
+impl Plugin for CellsPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, draw_board_cells.after(draw_board_bg));
     }
 }
-
-const CELL_FG_COLOR: [f32; 3] = [1., 1., 1.];
-const BORDER_TO_CELL_FG_RATIO: (f32, f32) = (1., 20.); //1:6
 
 #[derive(Component)]
 struct Cell;
 
 fn draw_board_cells(
     cell_count: Res<CellCount>,
-    board_bg: Single<Entity, With<Bg>>,
+    board_bg: Single<Entity, With<GridBg>>,
     mut commands: Commands,
     mut mesh: ResMut<Assets<Mesh>>,
     mut material: ResMut<Assets<ColorMaterial>>,

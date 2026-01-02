@@ -1,23 +1,19 @@
+use super::{
+    GRID_BG_COLOR, MIN_SIZE_OF_SQUARE_PERCENT, SIDE_MARGIN_RATIO, TOP_HINTS_PERCENT,
+    TOP_MARGIN_PERCENT,
+};
 use bevy::{prelude::*, window::WindowResized};
 
-pub struct GridBgPlugin;
-impl Plugin for GridBgPlugin {
+pub struct BgPlugin;
+impl Plugin for BgPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, draw_board_bg)
             .add_systems(Update, update_board_bg);
     }
 }
 
-const GRID_BG_COLOR: [f32; 3] = [0., 0., 0.];
-const SIDE_MARGIN_RATIO: (f32, f32) = (9., 1.); //9:1
-const TOP_MARGIN_PERCENT: f32 = 0.05; //5% of the screen's height per margin
-const TOP_HINT_PERCENT: f32 = 0.25;
-
-//in the case that screen width < screen height
-const MIN_SIZE_OF_SQUARE_PERCENT: f32 = 0.70; //70% of the screens width
-
 #[derive(Component)]
-pub struct Bg;
+pub struct GridBg;
 
 pub fn draw_board_bg(
     mut commands: Commands,
@@ -25,21 +21,21 @@ pub fn draw_board_bg(
     mut material: ResMut<Assets<ColorMaterial>>,
 ) {
     commands.spawn((
-        Bg,
+        GridBg,
         Mesh2d(mesh.add(Rectangle::default())),
         MeshMaterial2d(material.add(Color::srgb_from_array(GRID_BG_COLOR))),
     ));
 }
 
 fn update_board_bg(
-    mut bg: Single<&mut Transform, With<Bg>>,
+    mut bg: Single<&mut Transform, With<GridBg>>,
     mut resized_events: MessageReader<WindowResized>,
 ) {
     for event in resized_events.read() {
         let window_width = event.width;
         let window_height = event.height;
         let top_margin = window_height * TOP_MARGIN_PERCENT;
-        let top_hint = window_height * TOP_HINT_PERCENT;
+        let top_hint = window_height * TOP_HINTS_PERCENT;
         let board_size = f32::min(
             window_height - (2. * top_margin) - top_hint,
             window_width * MIN_SIZE_OF_SQUARE_PERCENT,
