@@ -19,7 +19,7 @@ pub struct GridBg;
 pub struct TopHintBg;
 
 #[derive(Component)]
-pub struct BottomHintBg;
+pub struct LeftHintBg;
 
 pub fn draw_board_bg(
     mut commands: Commands,
@@ -38,21 +38,21 @@ pub fn draw_board_bg(
     ));
 
     commands.spawn((
-        BottomHintBg,
+        LeftHintBg,
         Mesh2d(mesh.add(Rectangle::default())),
         MeshMaterial2d(material.add(Color::srgb_from_array(HINT_BG_COLOR))),
     ));
 }
 #[allow(clippy::type_complexity)]
 fn update_bg(
-    mut grid_bg: Single<&mut Transform, (With<GridBg>, Without<TopHintBg>, Without<BottomHintBg>)>,
+    mut grid_bg: Single<&mut Transform, (With<GridBg>, Without<TopHintBg>, Without<LeftHintBg>)>,
     mut top_hint_bg: Single<
         &mut Transform,
-        (With<TopHintBg>, Without<GridBg>, Without<BottomHintBg>),
+        (With<TopHintBg>, Without<GridBg>, Without<LeftHintBg>),
     >,
     mut left_hint_bg: Single<
         &mut Transform,
-        (With<BottomHintBg>, Without<GridBg>, Without<TopHintBg>),
+        (With<LeftHintBg>, Without<GridBg>, Without<TopHintBg>),
     >,
     mut resized_events: MessageReader<WindowResized>,
 ) {
