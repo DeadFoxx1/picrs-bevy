@@ -2,7 +2,7 @@ use super::{BORDER_TO_CELL_FG_RATIO, CELL_CROSSED_COLOR, CELL_FG_COLOR, CELL_FIL
 use bevy::prelude::*;
 
 use crate::{
-    CellCount,
+    CellCount, GameState,
     board::bg::{GridBg, draw_board_bg},
 };
 
@@ -21,6 +21,7 @@ enum CellState {
 #[derive(Component)]
 struct Cell {
     cell_state: CellState,
+    coords: (usize, usize),
 }
 
 fn draw_board_cells(
@@ -54,6 +55,7 @@ fn draw_board_cells(
                 .spawn((
                     Cell {
                         cell_state: CellState::Empty,
+                        coords: (x, y),
                     },
                     Mesh2d(mesh.add(Rectangle::default())),
                     MeshMaterial2d(material.add(Color::srgb_from_array(CELL_FG_COLOR))),
@@ -84,22 +86,28 @@ fn toggle_state(
     filled_material: Handle<ColorMaterial>,
     empty_material: Handle<ColorMaterial>,
     crossed_material: Handle<ColorMaterial>,
-) -> impl Fn(On<Pointer<Press>>, Query<(&mut Cell, &mut MeshMaterial2d<ColorMaterial>)>) {
-    move |event, mut query| {
+) -> impl Fn(On<Pointer<Press>>, Query<(&mut Cell, &mut MeshMaterial2d<ColorMaterial>)>, ResMut<GameState>)
+{
+    move |event, mut query, mut state| {
         if let Ok(mut query) = query.get_mut(event.entity) {
             match query.0.cell_state {
                 CellState::Empty => {
                     query.0.cell_state = CellState::Filled;
                     query.1.0 = filled_material.clone();
+                    state.toggle_square(query.0.coords);
                 }
                 CellState::Filled => {
                     query.0.cell_state = CellState::Crossed;
-                    query.1.0 = crossed_material.clone()
+                    query.1.0 = crossed_material.clone();
+                    state.toggle_square(query.0.coords);
                 }
                 CellState::Crossed => {
                     query.0.cell_state = CellState::Empty;
                     query.1.0 = empty_material.clone()
                 }
+            }
+            if state.is_solved() {
+                println!("solved :3");
             }
         }
     }
