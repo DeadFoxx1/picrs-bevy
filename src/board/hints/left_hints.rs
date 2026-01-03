@@ -11,14 +11,14 @@ use crate::{
 pub struct LeftHintsPlugin;
 impl Plugin for LeftHintsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, draw_hints.after(draw_board_bg));
+        app.add_systems(Startup, draw_left_hints.after(draw_board_bg));
     }
 }
 
-#[derive(Component)]
-struct Hint;
+#[derive(Component, Deref)]
+pub struct LeftHint(pub usize);
 
-fn draw_hints(
+pub fn draw_left_hints(
     cell_count: Res<CellCount>,
     hint_bg: Single<(Entity, &Transform), With<LeftHintBg>>,
     mut commands: Commands,
@@ -37,7 +37,7 @@ fn draw_hints(
         / n as f32;
     for y in 0..cell_count.nrow {
         commands.spawn((
-            Hint,
+            LeftHint(y),
             Mesh2d(mesh.add(Rectangle::default())),
             MeshMaterial2d(material.add(Color::srgb_from_array(HINTS_FG_COLOR))),
             Transform::from_translation(Vec3::new(

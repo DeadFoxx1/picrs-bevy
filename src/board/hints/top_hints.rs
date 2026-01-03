@@ -11,14 +11,14 @@ use crate::{
 pub struct TopHintsPlugin;
 impl Plugin for TopHintsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, draw_hints.after(draw_board_bg));
+        app.add_systems(Startup, draw_top_hints.after(draw_board_bg));
     }
 }
 
-#[derive(Component)]
-struct Hint;
+#[derive(Component, Deref)]
+pub struct TopHint(pub usize);
 
-fn draw_hints(
+pub fn draw_top_hints(
     cell_count: Res<CellCount>,
     hint_bg: Single<(Entity, &Transform), With<TopHintBg>>,
     mut commands: Commands,
@@ -37,7 +37,7 @@ fn draw_hints(
         / n as f32;
     for x in 0..cell_count.ncol {
         commands.spawn((
-            Hint,
+            TopHint(x),
             Mesh2d(mesh.add(Rectangle::default())),
             MeshMaterial2d(material.add(Color::srgb_from_array(HINTS_FG_COLOR))),
             Transform::from_translation(Vec3::new(
@@ -45,7 +45,11 @@ fn draw_hints(
                 0. - (hint_bg.1.scale.x * border_size) * 1.5,
                 1.,
             ))
-            .with_scale(Vec3::new(fg_size, 1. - (hint_bg.1.scale.x * border_size) * 3., 1.)),
+            .with_scale(Vec3::new(
+                fg_size,
+                1. - (hint_bg.1.scale.x * border_size) * 3.,
+                1.,
+            )),
             ChildOf(hint_bg.0),
         ));
     }
