@@ -21,6 +21,8 @@ pub const HORI_MARGIN_PERCENT: f32 = 0.30;
 pub const SIDE_MARGIN_RATIO: (f32, f32) = (9., 1.); //9:1
 
 pub const CELL_FG_COLOR: [f32; 3] = [1., 1., 1.];
+pub const CELL_HOVER_COLOR: [f32; 3] = [1., 1., 0.];
+pub const CELL_FILLED_COLOR: [f32; 3] = [0., 1., 1.];
 pub const BORDER_TO_CELL_FG_RATIO: (f32, f32) = (1., 10.); //1:20
 
 pub const HINTS_FG_COLOR: [f32; 3] = [1., 1., 1.];

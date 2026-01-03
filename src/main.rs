@@ -8,7 +8,7 @@ const START_NCOL: usize = 5;
 
 fn main() {
     let mut app = App::new();
-    app.add_plugins((DefaultPlugins, BoardPlugin))
+    app.add_plugins((DefaultPlugins, BoardPlugin, MeshPickingPlugin))
         .add_systems(Startup, init)
         .insert_resource(CellCount {
             nrow: START_NROW,
