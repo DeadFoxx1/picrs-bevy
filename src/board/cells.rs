@@ -1,4 +1,4 @@
-use super::{BORDER_TO_CELL_FG_RATIO, CELL_FG_COLOR, CELL_FILLED_COLOR, CELL_HOVER_COLOR};
+use super::{BORDER_TO_CELL_FG_RATIO, CELL_CROSSED_COLOR, CELL_FG_COLOR, CELL_FILLED_COLOR};
 use bevy::prelude::*;
 
 use crate::{
@@ -13,8 +13,15 @@ impl Plugin for CellsPlugin {
     }
 }
 
+enum CellState {
+    Filled,
+    Empty,
+    Crossed,
+}
 #[derive(Component)]
-struct Cell;
+struct Cell {
+    cell_state: CellState,
+}
 
 fn draw_board_cells(
     cell_count: Res<CellCount>,
@@ -38,15 +45,16 @@ fn draw_board_cells(
     let left_of_board = -top_of_board;
 
     let white_matl = material.add(Color::WHITE);
-    let hover_matl = material.add(Color::srgb_from_array(CELL_HOVER_COLOR));
-    let pressed_matl = material.add(Color::srgb_from_array(CELL_FILLED_COLOR));
-
+    let crossed_matl = material.add(Color::srgb_from_array(CELL_CROSSED_COLOR));
+    let filled_matl = material.add(Color::srgb_from_array(CELL_FILLED_COLOR));
 
     for x in 0..cell_count.ncol {
         for y in 0..cell_count.nrow {
             commands
                 .spawn((
-                    Cell,
+                    Cell {
+                        cell_state: CellState::Empty,
+                    },
                     Mesh2d(mesh.add(Rectangle::default())),
                     MeshMaterial2d(material.add(Color::srgb_from_array(CELL_FG_COLOR))),
                     Transform::from_translation(Vec3::new(
@@ -61,22 +69,38 @@ fn draw_board_cells(
                     .with_scale(Vec3::new(fg_size, fg_size, 1.)),
                     ChildOf(*board_bg),
                 ))
-                .observe(update_material_on::<Pointer<Over>>(hover_matl.clone()))
-                .observe(update_material_on::<Pointer<Out>>(white_matl.clone()))
-                .observe(update_material_on::<Pointer<Press>>(pressed_matl.clone()))
-                .observe(update_material_on::<Pointer<Release>>(hover_matl.clone()));
+                //.observe(toggle_state::<Pointer<Over>>)
+                //.observe(toggle_state::<Pointer<Out>>)
+                .observe(toggle_state(
+                    filled_matl.clone(),
+                    white_matl.clone(),
+                    crossed_matl.clone(),
+                ));
         }
     }
 }
-fn update_material_on<E: EntityEvent>(
-    new_material: Handle<ColorMaterial>,
-) -> impl Fn(On<E>, Query<&mut MeshMaterial2d<ColorMaterial>>) {
-    // An observer closure that captures `new_material`. We do this to avoid needing to write four
-    // versions of this observer, each triggered by a different event and with a different hardcoded
-    // material. Instead, the event type is a generic, and the material is passed in.
+#[allow(clippy::type_complexity)]
+fn toggle_state(
+    filled_material: Handle<ColorMaterial>,
+    empty_material: Handle<ColorMaterial>,
+    crossed_material: Handle<ColorMaterial>,
+) -> impl Fn(On<Pointer<Press>>, Query<(&mut Cell, &mut MeshMaterial2d<ColorMaterial>)>) {
     move |event, mut query| {
-        if let Ok(mut material) = query.get_mut(event.event_target()) {
-            material.0 = new_material.clone();
+        if let Ok(mut query) = query.get_mut(event.entity) {
+            match query.0.cell_state {
+                CellState::Empty => {
+                    query.0.cell_state = CellState::Filled;
+                    query.1.0 = filled_material.clone();
+                }
+                CellState::Filled => {
+                    query.0.cell_state = CellState::Crossed;
+                    query.1.0 = crossed_material.clone()
+                }
+                CellState::Crossed => {
+                    query.0.cell_state = CellState::Empty;
+                    query.1.0 = empty_material.clone()
+                }
+            }
         }
     }
 }
