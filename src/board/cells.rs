@@ -71,8 +71,6 @@ fn draw_board_cells(
                     .with_scale(Vec3::new(fg_size, fg_size, 1.)),
                     ChildOf(*board_bg),
                 ))
-                //.observe(toggle_state::<Pointer<Over>>)
-                //.observe(toggle_state::<Pointer<Out>>)
                 .observe(toggle_state(
                     filled_matl.clone(),
                     white_matl.clone(),

@@ -4,8 +4,8 @@ use crate::board::BoardPlugin;
 use bevy::prelude::*;
 use picrs_lib::table::Table;
 
-const START_NROW: usize = 5;
-const START_NCOL: usize = 5;
+const START_NROW: usize = 10;
+const START_NCOL: usize = 10;
 
 fn main() {
     let mut app = App::new();
@@ -15,18 +15,12 @@ fn main() {
             nrow: START_NROW,
             ncol: START_NCOL,
         })
-        .insert_resource(GameState(Table::new(START_NCOL, START_NROW, 20)))
+        .insert_resource(GameState(Table::new(START_NCOL, START_NROW, 75)))
         .run();
 }
 
-fn init(mut commands: Commands, game_state: Res<GameState>) {
+fn init(mut commands: Commands) {
     commands.spawn(Camera2d);
-    for x in game_state.columns[0].hints.clone() {
-        println!("{}", x);
-    }
-    for x in game_state.rows[0].hints.clone() {
-        println!("{}", x);
-    }
 }
 
 #[derive(Resource)]
