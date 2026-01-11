@@ -1,27 +1,51 @@
-use super::{BORDER_TO_CELL_FG_RATIO, CELL_CROSSED_COLOR, CELL_FG_COLOR, CELL_FILLED_COLOR};
+use super::{BORDER_TO_CELL_FG_RATIO, CELL_CROSSED_COLOR, CELL_EMPTY_COLOR, CELL_FILLED_COLOR};
 use bevy::prelude::*;
 
 use crate::{
-    CellCount, GameState,
+    CellCount,
     board::bg::{GridBg, draw_board_bg},
+    cursor::{paint_cell, toggle_cursor},
 };
 
 pub struct CellsPlugin;
 impl Plugin for CellsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, draw_board_cells.after(draw_board_bg));
+        app.add_systems(
+            Startup,
+            (draw_board_cells.after(draw_board_bg), CellMatl::init),
+        );
     }
 }
 
-enum CellState {
+#[derive(Clone, Copy, Debug)]
+pub enum CellState {
     Filled,
     Empty,
     Crossed,
 }
 #[derive(Component)]
-struct Cell {
-    cell_state: CellState,
-    coords: (usize, usize),
+pub struct Cell {
+    pub cell_state: CellState,
+    pub coords: (usize, usize),
+}
+#[derive(Resource)]
+pub struct CellMatl {
+    pub empty: Handle<ColorMaterial>,
+    pub crossed: Handle<ColorMaterial>,
+    pub filled: Handle<ColorMaterial>,
+}
+impl CellMatl {
+    pub fn init(mut commands: Commands, mut material: ResMut<Assets<ColorMaterial>>) {
+        let empty = material.add(Color::srgb_from_array(CELL_EMPTY_COLOR));
+        let crossed = material.add(Color::srgb_from_array(CELL_CROSSED_COLOR));
+        let filled = material.add(Color::srgb_from_array(CELL_FILLED_COLOR));
+        let cell_matl = CellMatl {
+            empty,
+            crossed,
+            filled,
+        };
+        commands.insert_resource(cell_matl);
+    }
 }
 
 fn draw_board_cells(
@@ -29,7 +53,7 @@ fn draw_board_cells(
     board_bg: Single<Entity, With<GridBg>>,
     mut commands: Commands,
     mut mesh: ResMut<Assets<Mesh>>,
-    mut material: ResMut<Assets<ColorMaterial>>,
+    cell_matl: Res<CellMatl>,
 ) {
     let n = usize::max(cell_count.nrow, cell_count.ncol);
     let border_size = ((BORDER_TO_CELL_FG_RATIO.0
@@ -45,10 +69,6 @@ fn draw_board_cells(
     let top_of_board = 1. / 2.;
     let left_of_board = -top_of_board;
 
-    let white_matl = material.add(Color::WHITE);
-    let crossed_matl = material.add(Color::srgb_from_array(CELL_CROSSED_COLOR));
-    let filled_matl = material.add(Color::srgb_from_array(CELL_FILLED_COLOR));
-
     for x in 0..cell_count.ncol {
         for y in 0..cell_count.nrow {
             commands
@@ -58,7 +78,7 @@ fn draw_board_cells(
                         coords: (x, y),
                     },
                     Mesh2d(mesh.add(Rectangle::default())),
-                    MeshMaterial2d(material.add(Color::srgb_from_array(CELL_FG_COLOR))),
+                    MeshMaterial2d(cell_matl.empty.clone()),
                     Transform::from_translation(Vec3::new(
                         left_of_board
                             + (border_size + fg_size / 2.)
@@ -71,42 +91,7 @@ fn draw_board_cells(
                     .with_scale(Vec3::new(fg_size, fg_size, 1.)),
                     ChildOf(*board_bg),
                 ))
-                .observe(toggle_state(
-                    filled_matl.clone(),
-                    white_matl.clone(),
-                    crossed_matl.clone(),
-                ));
-        }
-    }
-}
-#[allow(clippy::type_complexity)]
-fn toggle_state(
-    filled_material: Handle<ColorMaterial>,
-    empty_material: Handle<ColorMaterial>,
-    crossed_material: Handle<ColorMaterial>,
-) -> impl Fn(On<Pointer<Press>>, Query<(&mut Cell, &mut MeshMaterial2d<ColorMaterial>)>, ResMut<GameState>)
-{
-    move |event, mut query, mut state| {
-        if let Ok(mut query) = query.get_mut(event.entity) {
-            match query.0.cell_state {
-                CellState::Empty => {
-                    query.0.cell_state = CellState::Filled;
-                    query.1.0 = filled_material.clone();
-                    state.toggle_square(query.0.coords);
-                }
-                CellState::Filled => {
-                    query.0.cell_state = CellState::Crossed;
-                    query.1.0 = crossed_material.clone();
-                    state.toggle_square(query.0.coords);
-                }
-                CellState::Crossed => {
-                    query.0.cell_state = CellState::Empty;
-                    query.1.0 = empty_material.clone()
-                }
-            }
-            if state.is_solved() {
-                println!("solved :3");
-            }
+                .observe(toggle_cursor()).observe(paint_cell());
         }
     }
 }

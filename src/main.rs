@@ -1,6 +1,8 @@
 mod board;
+mod cursor;
 
 use crate::board::BoardPlugin;
+use crate::cursor::CursorPlugin;
 use bevy::prelude::*;
 use picrs_lib::table::Table;
 
@@ -9,7 +11,7 @@ const START_NCOL: usize = 10;
 
 fn main() {
     let mut app = App::new();
-    app.add_plugins((DefaultPlugins, BoardPlugin, MeshPickingPlugin))
+    app.add_plugins((DefaultPlugins, BoardPlugin, MeshPickingPlugin, CursorPlugin))
         .add_systems(Startup, init)
         .insert_resource(CellCount {
             nrow: START_NROW,
