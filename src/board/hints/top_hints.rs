@@ -25,7 +25,7 @@ pub fn draw_top_hints(
     mut mesh: ResMut<Assets<Mesh>>,
     mut material: ResMut<Assets<ColorMaterial>>,
 ) {
-    let n = cell_count.ncol;
+    let n = cell_count.ncol.max(cell_count.nrow);
     let left_of_board = -0.5;
     let border_size = ((BORDER_TO_HINTS_FG_RATIO.0
         / (BORDER_TO_HINTS_FG_RATIO.1 + BORDER_TO_HINTS_FG_RATIO.0))

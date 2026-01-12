@@ -1,13 +1,10 @@
-use bevy::{prelude::*, text::TextBounds, window::WindowResized};
+use bevy::prelude::*;
 
 use crate::{
-    CellCount, GameState,
-    board::{
-        bg::TopHintBg,
-        hints::{
-            left_hints::{LeftHint, draw_left_hints},
-            top_hints::{TopHint, draw_top_hints},
-        },
+    GameState,
+    board::hints::{
+        left_hints::{LeftHint, draw_left_hints},
+        top_hints::{TopHint, draw_top_hints},
     },
 };
 
@@ -30,7 +27,6 @@ struct LeftHintText;
 fn draw_text(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    cell_count: Res<CellCount>,
     game_state: Res<GameState>,
     top_hints: Query<(Entity, &TopHint, &Transform)>,
     left_hints: Query<(Entity, &LeftHint, &Transform)>,
@@ -69,7 +65,7 @@ fn draw_text(
                 3.,
             )),
             Text2d::new(
-                game_state.rows[cell_count.nrow - index.0 - 1]
+                game_state.rows[index.0]
                     .hints
                     .clone()
                     .into_iter()

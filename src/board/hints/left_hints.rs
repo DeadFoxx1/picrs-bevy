@@ -25,8 +25,8 @@ pub fn draw_left_hints(
     mut mesh: ResMut<Assets<Mesh>>,
     mut material: ResMut<Assets<ColorMaterial>>,
 ) {
-    let n = cell_count.nrow;
-    let left_of_board = -0.5;
+    let n = cell_count.nrow.max(cell_count.ncol);
+    let top_of_board = 0.5;
     let border_size = ((BORDER_TO_HINTS_FG_RATIO.0
         / (BORDER_TO_HINTS_FG_RATIO.1 + BORDER_TO_HINTS_FG_RATIO.0))
         / n as f32)
@@ -42,7 +42,7 @@ pub fn draw_left_hints(
             MeshMaterial2d(material.add(Color::srgb_from_array(HINTS_FG_COLOR))),
             Transform::from_translation(Vec3::new(
                 0. + (hint_bg.1.scale.y * border_size) * 1.5,
-                left_of_board + (border_size + fg_size / 2.) + (border_size + fg_size) * y as f32,
+                top_of_board - (border_size + fg_size / 2.) - (border_size + fg_size) * y as f32,
                 1.,
             ))
             .with_scale(Vec3::new(
