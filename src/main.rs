@@ -6,8 +6,9 @@ use crate::cursor::CursorPlugin;
 use bevy::prelude::*;
 use picrs_lib::table::Table;
 
-const START_NROW: usize = 6;
-const START_NCOL: usize = 7;
+const START_NROW: usize = 5;
+const START_NCOL: usize = 5;
+const START_FILL: usize = 15;
 
 fn main() {
     let mut app = App::new();
@@ -17,7 +18,7 @@ fn main() {
             nrow: START_NROW,
             ncol: START_NCOL,
         })
-        .insert_resource(GameState(Table::new(START_NCOL, START_NROW, 36)))
+        .insert_resource(GameState(Table::new(START_NCOL, START_NROW, START_FILL)))
         .run();
 }
 
