@@ -3,7 +3,7 @@ use bevy::prelude::*;
 
 use crate::{
     CellCount,
-    board::bg::{GridBg, draw_board_bg},
+    board::{CELL_SOLVED_COLOR, bg::{GridBg, draw_board_bg}},
     cursor::{paint_cell, toggle_cursor},
 };
 
@@ -33,16 +33,19 @@ pub struct CellMatl {
     pub empty: Handle<ColorMaterial>,
     pub crossed: Handle<ColorMaterial>,
     pub filled: Handle<ColorMaterial>,
+    pub green: Handle<ColorMaterial>
 }
 impl CellMatl {
     pub fn init(mut commands: Commands, mut material: ResMut<Assets<ColorMaterial>>) {
         let empty = material.add(Color::srgb_from_array(CELL_EMPTY_COLOR));
         let crossed = material.add(Color::srgb_from_array(CELL_CROSSED_COLOR));
         let filled = material.add(Color::srgb_from_array(CELL_FILLED_COLOR));
+        let green = material.add(Color::srgb_from_array(CELL_SOLVED_COLOR));
         let cell_matl = CellMatl {
             empty,
             crossed,
             filled,
+            green,
         };
         commands.insert_resource(cell_matl);
     }

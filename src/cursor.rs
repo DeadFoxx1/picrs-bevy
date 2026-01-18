@@ -10,7 +10,9 @@ impl Plugin for CursorPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(CursorState {
             cell_state: CellState::Empty,
-        });
+        })
+        .add_message::<GameWin>()
+        .add_systems(Update, game_win);
     }
 }
 
@@ -27,8 +29,9 @@ pub fn toggle_cursor() -> impl Fn(
     ResMut<CursorState>,
     ResMut<GameState>,
     Res<CellMatl>,
+    Commands,
 ) {
-    move |event, mut query, mut cursor_state, mut game_state, cell_matl| {
+    move |event, mut query, mut cursor_state, mut game_state, cell_matl, mut commands| {
         if let Ok(mut query) = query.get_mut(event.entity) {
             match query.0.cell_state {
                 CellState::Empty => {
@@ -53,6 +56,7 @@ pub fn toggle_cursor() -> impl Fn(
                 cell_matl,
                 &cursor_state,
                 &mut game_state,
+                &mut commands,
             );
         }
     }
@@ -65,8 +69,9 @@ pub fn paint_cell() -> impl Fn(
     Res<CellMatl>,
     ResMut<CursorState>,
     ResMut<GameState>,
+    Commands,
 ) {
-    move |event, mut query, cell_matl, cursor_state, mut game_state| {
+    move |event, mut query, cell_matl, cursor_state, mut game_state, mut commands| {
         if let Ok(mut query) = query.get_mut(event.entity) {
             update_cell(
                 &mut query.0,
@@ -74,6 +79,7 @@ pub fn paint_cell() -> impl Fn(
                 cell_matl,
                 &cursor_state,
                 &mut game_state,
+                &mut commands,
             )
         }
     }
@@ -85,6 +91,7 @@ fn update_cell(
     cell_matl: Res<CellMatl>,
     cursor_state: &CursorState,
     game_state: &mut ResMut<GameState>,
+    commands: &mut Commands,
 ) {
     //dont need to change it if its already the same state as the cursor
     if cell.cell_state == cursor_state.cell_state {
@@ -114,6 +121,23 @@ fn update_cell(
     }
     if game_state.is_solved() {
         println!("solved :33333 UwU OwO");
+        commands.write_message(GameWin);
     }
 }
 
+#[derive(Message)]
+struct GameWin;
+
+fn game_win(
+    mut messages: MessageReader<GameWin>,
+    mut query: Query<(&Cell, &mut MeshMaterial2d<ColorMaterial>)>,
+    cell_matl: Res<CellMatl>,
+) {
+    for _message in messages.read() {
+        for (cell, mut matl) in query.iter_mut() {
+            if cell.cell_state == CellState::Filled {
+                **matl = cell_matl.green.clone();
+            }
+        }
+    }
+}
