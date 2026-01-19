@@ -5,13 +5,13 @@ use crate::{
     board::{
         BORDER_TO_HINTS_FG_RATIO, HINTS_FG_COLOR,
         bg::{TopHintBg, draw_board_bg},
-    },
+    }, app_state::AppState,
 };
 
 pub struct TopHintsPlugin;
 impl Plugin for TopHintsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, draw_top_hints.after(draw_board_bg));
+        app.add_systems(OnEnter(AppState::InGame), draw_top_hints.after(draw_board_bg));
     }
 }
 

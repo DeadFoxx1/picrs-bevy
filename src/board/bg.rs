@@ -1,3 +1,5 @@
+use crate::app_state::AppState;
+
 use super::{
     GRID_BG_COLOR, HINT_BG_COLOR, HINTS_PERCENT, HORI_MARGIN_PERCENT, SIDE_MARGIN_RATIO,
     VERT_MARGIN_PERCENT,
@@ -7,8 +9,8 @@ use bevy::{prelude::*, window::WindowResized};
 pub struct BgPlugin;
 impl Plugin for BgPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, draw_board_bg)
-            .add_systems(Update, update_bg);
+        app.add_systems(OnEnter(AppState::InGame), draw_board_bg)
+            .add_systems(Update, update_bg.run_if(in_state(AppState::InGame)));
     }
 }
 

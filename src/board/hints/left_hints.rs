@@ -5,13 +5,13 @@ use crate::{
     board::{
         BORDER_TO_HINTS_FG_RATIO, HINTS_FG_COLOR,
         bg::{LeftHintBg, draw_board_bg},
-    },
+    }, app_state::AppState,
 };
 
 pub struct LeftHintsPlugin;
 impl Plugin for LeftHintsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, draw_left_hints.after(draw_board_bg));
+        app.add_systems(OnEnter(AppState::InGame), draw_left_hints.after(draw_board_bg));
     }
 }
 

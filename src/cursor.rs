@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::{
     GameState,
-    board::cells::{Cell, CellMatl, CellState},
+    board::cells::{Cell, CellMatl, CellState}, app_state::AppState,
 };
 
 pub struct CursorPlugin;
@@ -12,7 +12,7 @@ impl Plugin for CursorPlugin {
             cell_state: CellState::Empty,
         })
         .add_message::<GameWin>()
-        .add_systems(Update, game_win);
+        .add_systems(Update, game_win.run_if(in_state(AppState::InGame)));
     }
 }
 

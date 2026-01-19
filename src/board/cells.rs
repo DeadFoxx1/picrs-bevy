@@ -3,15 +3,19 @@ use bevy::prelude::*;
 
 use crate::{
     CellCount,
-    board::{CELL_SOLVED_COLOR, bg::{GridBg, draw_board_bg}},
+    board::{
+        CELL_SOLVED_COLOR,
+        bg::{GridBg, draw_board_bg},
+    },
     cursor::{paint_cell, toggle_cursor},
+    app_state::AppState,
 };
 
 pub struct CellsPlugin;
 impl Plugin for CellsPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
-            Startup,
+            OnEnter(AppState::InGame),
             (draw_board_cells.after(draw_board_bg), CellMatl::init),
         );
     }
@@ -33,7 +37,7 @@ pub struct CellMatl {
     pub empty: Handle<ColorMaterial>,
     pub crossed: Handle<ColorMaterial>,
     pub filled: Handle<ColorMaterial>,
-    pub green: Handle<ColorMaterial>
+    pub green: Handle<ColorMaterial>,
 }
 impl CellMatl {
     pub fn init(mut commands: Commands, mut material: ResMut<Assets<ColorMaterial>>) {
@@ -94,7 +98,8 @@ fn draw_board_cells(
                     .with_scale(Vec3::new(fg_size, fg_size, 1.)),
                     ChildOf(*board_bg),
                 ))
-                .observe(toggle_cursor()).observe(paint_cell());
+                .observe(toggle_cursor())
+                .observe(paint_cell());
         }
     }
 }

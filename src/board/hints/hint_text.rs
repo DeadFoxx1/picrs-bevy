@@ -5,14 +5,14 @@ use crate::{
     board::hints::{
         left_hints::{LeftHint, draw_left_hints},
         top_hints::{TopHint, draw_top_hints},
-    },
+    }, app_state::AppState,
 };
 
 pub struct HintTextPlugin;
 impl Plugin for HintTextPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
-            Startup,
+            OnEnter(AppState::InGame),
             draw_text.after(draw_left_hints).after(draw_top_hints),
         );
     }
