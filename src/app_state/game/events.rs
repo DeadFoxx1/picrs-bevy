@@ -2,11 +2,14 @@ use bevy::prelude::*;
 
 use crate::{
     GameState,
-    board::cells::{Cell, CellMatl, CellState}, app_state::AppState,
+    app_state::{
+        AppState,
+        game::board::cells::{Cell, CellMatl, CellState},
+    },
 };
 
-pub struct CursorPlugin;
-impl Plugin for CursorPlugin {
+pub struct EventPlugin;
+impl Plugin for EventPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(CursorState {
             cell_state: CellState::Empty,

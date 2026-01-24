@@ -3,12 +3,16 @@ use bevy::prelude::*;
 
 use crate::{
     CellCount,
-    board::{
-        CELL_SOLVED_COLOR,
-        bg::{GridBg, draw_board_bg},
+    app_state::{
+        AppState,
+        game::{
+            board::{
+                CELL_SOLVED_COLOR,
+                bg::{GridBg, draw_board_bg},
+            },
+            events::{paint_cell, toggle_cursor},
+        },
     },
-    cursor::{paint_cell, toggle_cursor},
-    app_state::AppState,
 };
 
 pub struct CellsPlugin;

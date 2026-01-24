@@ -2,10 +2,13 @@ use bevy::prelude::*;
 
 use crate::{
     GameState,
-    board::hints::{
-        left_hints::{LeftHint, draw_left_hints},
-        top_hints::{TopHint, draw_top_hints},
-    }, app_state::AppState,
+    app_state::{
+        AppState,
+        game::board::hints::{
+            left_hints::{LeftHint, draw_left_hints},
+            top_hints::{TopHint, draw_top_hints},
+        },
+    },
 };
 
 pub struct HintTextPlugin;

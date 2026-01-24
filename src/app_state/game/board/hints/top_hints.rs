@@ -2,31 +2,37 @@ use bevy::prelude::*;
 
 use crate::{
     CellCount,
-    board::{
-        BORDER_TO_HINTS_FG_RATIO, HINTS_FG_COLOR,
-        bg::{LeftHintBg, draw_board_bg},
-    }, app_state::AppState,
+    app_state::{
+        AppState,
+        game::board::{
+            BORDER_TO_HINTS_FG_RATIO, HINTS_FG_COLOR,
+            bg::{TopHintBg, draw_board_bg},
+        },
+    },
 };
 
-pub struct LeftHintsPlugin;
-impl Plugin for LeftHintsPlugin {
+pub struct TopHintsPlugin;
+impl Plugin for TopHintsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(AppState::InGame), draw_left_hints.after(draw_board_bg));
+        app.add_systems(
+            OnEnter(AppState::InGame),
+            draw_top_hints.after(draw_board_bg),
+        );
     }
 }
 
 #[derive(Component, Deref)]
-pub struct LeftHint(pub usize);
+pub struct TopHint(pub usize);
 
-pub fn draw_left_hints(
+pub fn draw_top_hints(
     cell_count: Res<CellCount>,
-    hint_bg: Single<(Entity, &Transform), With<LeftHintBg>>,
+    hint_bg: Single<(Entity, &Transform), With<TopHintBg>>,
     mut commands: Commands,
     mut mesh: ResMut<Assets<Mesh>>,
     mut material: ResMut<Assets<ColorMaterial>>,
 ) {
-    let n = cell_count.nrow.max(cell_count.ncol);
-    let top_of_board = 0.5;
+    let n = cell_count.ncol.max(cell_count.nrow);
+    let left_of_board = -0.5;
     let border_size = ((BORDER_TO_HINTS_FG_RATIO.0
         / (BORDER_TO_HINTS_FG_RATIO.1 + BORDER_TO_HINTS_FG_RATIO.0))
         / n as f32)
@@ -35,19 +41,19 @@ pub fn draw_left_hints(
     let fg_size = (BORDER_TO_HINTS_FG_RATIO.1
         / (BORDER_TO_HINTS_FG_RATIO.0 + BORDER_TO_HINTS_FG_RATIO.1))
         / n as f32;
-    for y in 0..cell_count.nrow {
+    for x in 0..cell_count.ncol {
         commands.spawn((
-            LeftHint(y),
+            TopHint(x),
             Mesh2d(mesh.add(Rectangle::default())),
             MeshMaterial2d(material.add(Color::srgb_from_array(HINTS_FG_COLOR))),
             Transform::from_translation(Vec3::new(
-                0. + (hint_bg.1.scale.y * border_size) * 1.5,
-                top_of_board - (border_size + fg_size / 2.) - (border_size + fg_size) * y as f32,
+                left_of_board + (border_size + fg_size / 2.) + (border_size + fg_size) * x as f32,
+                0. - (hint_bg.1.scale.x * border_size) * 1.5,
                 1.,
             ))
             .with_scale(Vec3::new(
-                1. - (hint_bg.1.scale.y * border_size) * 3.,
                 fg_size,
+                1. - (hint_bg.1.scale.x * border_size) * 3.,
                 1.,
             )),
             ChildOf(hint_bg.0),
