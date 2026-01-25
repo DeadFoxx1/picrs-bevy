@@ -4,9 +4,9 @@ use picrs_lib::table::Table;
 use crate::app_state::StatePlugin;
 mod app_state;
 
-const START_NROW: usize = 10;
-const START_NCOL: usize = 10;
-const START_FILL: usize = 75;
+const START_NROW: usize = 2;
+const START_NCOL: usize = 2;
+const START_FILL: usize = 4;
 
 pub struct GamePlugin;
 impl Plugin for GamePlugin {
