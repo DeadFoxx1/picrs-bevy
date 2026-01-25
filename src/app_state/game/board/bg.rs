@@ -1,8 +1,8 @@
 use crate::app_state::AppState;
 
 use super::{
-    GRID_BG_COLOR, HINT_BG_COLOR, HINTS_PERCENT, HORI_MARGIN_PERCENT, SIDE_MARGIN_RATIO,
-    VERT_MARGIN_PERCENT,
+    GRID_BG_COLOR, HINTS_PERCENT, HINT_BG_COLOR, HORI_MARGIN_PERCENT, HORI_MARGIN_RATIO,
+    VERT_MARGIN_PERCENT, VERT_MARGIN_RATIO,
 };
 use bevy::{prelude::*, window::WindowResized};
 
@@ -62,17 +62,18 @@ fn update_bg(
         let window_width = event.width;
         let window_height = event.height;
 
-        let top_margin = window_height * VERT_MARGIN_PERCENT / 2.;
-
         let grid_size = f32::min(
             window_height * (1. - VERT_MARGIN_PERCENT),
             window_width * (1. - HORI_MARGIN_PERCENT),
         );
         let hint_size = grid_size * HINTS_PERCENT;
-
         let grid_size = grid_size - hint_size;
-        let left_margin = ((window_width - grid_size - hint_size) * SIDE_MARGIN_RATIO.0)
-            / (SIDE_MARGIN_RATIO.0 + SIDE_MARGIN_RATIO.1);
+
+        let top_margin = ((window_height - grid_size - hint_size) * VERT_MARGIN_RATIO.0)
+            / (VERT_MARGIN_RATIO.0 + VERT_MARGIN_RATIO.1);
+        let left_margin = ((window_width - grid_size - hint_size) * HORI_MARGIN_RATIO.0)
+            / (HORI_MARGIN_RATIO.0 + HORI_MARGIN_RATIO.1);
+
         let top_of_screen = window_height / 2.;
         let left_of_screen = -(window_width / 2.);
 
