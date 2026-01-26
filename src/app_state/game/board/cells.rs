@@ -2,17 +2,17 @@ use super::{BORDER_TO_CELL_FG_RATIO, CELL_CROSSED_COLOR, CELL_EMPTY_COLOR, CELL_
 use bevy::prelude::*;
 
 use crate::{
-    CellCount,
     app_state::{
-        AppState,
         game::{
             board::{
+                bg::{draw_board_bg, GridBg},
                 CELL_SOLVED_COLOR,
-                bg::{GridBg, draw_board_bg},
             },
             events::{paint_cell, toggle_cursor},
         },
+        AppState,
     },
+    CellCount,
 };
 
 pub struct CellsPlugin;

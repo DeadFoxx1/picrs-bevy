@@ -1,14 +1,14 @@
 use bevy::prelude::*;
 
 use crate::{
-    CellCount,
     app_state::{
-        AppState,
         game::board::{
+            bg::{draw_board_bg, TopHintBg},
             BORDER_TO_HINTS_FG_RATIO, HINTS_FG_COLOR,
-            bg::{TopHintBg, draw_board_bg},
         },
+        AppState,
     },
+    CellCount,
 };
 
 pub struct TopHintsPlugin;

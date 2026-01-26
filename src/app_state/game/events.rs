@@ -1,8 +1,8 @@
 use bevy::prelude::*;
+use picrs_lib::table::Table;
 
 use crate::{
-    GameState,
-    app_state::game::board::cells::{Cell, CellMatl, CellState},
+    app_state::{game::board::{cells::{Cell, CellMatl, CellState}}, AppState}, CellCount, GameState
 };
 
 pub struct EventPlugin;
@@ -10,8 +10,8 @@ impl Plugin for EventPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(CursorState {
             cell_state: CellState::Empty,
-        })
-        .add_observer(game_win);
+        }).add_observer(game_win)
+        .add_observer(game_reset);
     }
 }
 
@@ -115,8 +115,9 @@ fn update_cell(
         CellState::Crossed => *current_matl = cell_matl.crossed.clone(),
     }
     if game_state.is_solved() {
-        println!("solved :33333 UwU OwO");
+        info!("solved :33333 UwU OwO");
         commands.trigger(GameWin);
+        commands.trigger(GameReset);
     }
 }
 
@@ -133,4 +134,24 @@ fn game_win(
             **matl = cell_matl.green.clone();
         }
     }
+}
+
+#[derive(Event)]
+struct GameReset;
+
+fn game_reset(
+    _: On<GameReset>,
+    mut query: Query<(&mut Cell, &mut MeshMaterial2d<ColorMaterial>)>,
+    cell_matl: Res<CellMatl>,
+    mut game_state: ResMut<GameState>,
+    mut next_state: ResMut<NextState<AppState>>,
+    cell_count: Res<CellCount>,
+) {
+    for (mut cell, mut matl) in query.iter_mut(){
+        cell.cell_state = CellState::Empty;
+        **matl = cell_matl.empty.clone();
+        game_state.0 = Table::new(cell_count.ncol, cell_count.nrow, cell_count.nfilled);
+    }
+    next_state.set(AppState::MainMenu);
+    next_state.set(AppState::InGame);
 }

@@ -1,14 +1,14 @@
 use bevy::prelude::*;
 
 use crate::{
-    GameState,
     app_state::{
-        AppState,
         game::board::hints::{
-            left_hints::{LeftHint, draw_left_hints},
-            top_hints::{TopHint, draw_top_hints},
+            left_hints::{draw_left_hints, LeftHint},
+            top_hints::{draw_top_hints, TopHint},
         },
+        AppState,
     },
+    GameState,
 };
 
 pub struct HintTextPlugin;

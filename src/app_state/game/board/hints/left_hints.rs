@@ -1,14 +1,14 @@
 use bevy::prelude::*;
 
 use crate::{
-    CellCount,
     app_state::{
-        AppState,
         game::board::{
+            bg::{draw_board_bg, LeftHintBg},
             BORDER_TO_HINTS_FG_RATIO, HINTS_FG_COLOR,
-            bg::{LeftHintBg, draw_board_bg},
         },
+        AppState,
     },
+    CellCount,
 };
 
 pub struct LeftHintsPlugin;
