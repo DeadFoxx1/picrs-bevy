@@ -4,7 +4,8 @@ use crate::{
     app_state::{
         game::board::{
             bg::{draw_board_bg, LeftHintBg},
-            BORDER_TO_HINTS_FG_RATIO, HINTS_FG_COLOR,
+            hints::HintMatl,
+            BORDER_TO_HINTS_FG_RATIO,
         },
         AppState,
     },
@@ -21,15 +22,17 @@ impl Plugin for LeftHintsPlugin {
     }
 }
 
-#[derive(Component, Deref)]
-pub struct LeftHint(pub usize);
+#[derive(Component)]
+pub struct LeftHint {
+    pub index: usize,
+}
 
 pub fn draw_left_hints(
     cell_count: Res<CellCount>,
     hint_bg: Single<(Entity, &Transform), With<LeftHintBg>>,
     mut commands: Commands,
     mut mesh: ResMut<Assets<Mesh>>,
-    mut material: ResMut<Assets<ColorMaterial>>,
+    matl: Res<HintMatl>,
 ) {
     let n = cell_count.nrow.max(cell_count.ncol);
     let top_of_board = 0.5;
@@ -41,11 +44,12 @@ pub fn draw_left_hints(
     let fg_size = (BORDER_TO_HINTS_FG_RATIO.1
         / (BORDER_TO_HINTS_FG_RATIO.0 + BORDER_TO_HINTS_FG_RATIO.1))
         / n as f32;
+
     for y in 0..cell_count.nrow {
         commands.spawn((
-            LeftHint(y),
+            LeftHint { index: y },
             Mesh2d(mesh.add(Rectangle::default())),
-            MeshMaterial2d(material.add(Color::srgb_from_array(HINTS_FG_COLOR))),
+            MeshMaterial2d(matl.empty.clone()),
             Transform::from_translation(Vec3::new(
                 0. + (hint_bg.1.scale.y * border_size) * 1.5,
                 top_of_board - (border_size + fg_size / 2.) - (border_size + fg_size) * y as f32,

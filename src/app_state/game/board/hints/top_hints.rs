@@ -4,7 +4,8 @@ use crate::{
     app_state::{
         game::board::{
             bg::{draw_board_bg, TopHintBg},
-            BORDER_TO_HINTS_FG_RATIO, HINTS_FG_COLOR,
+            hints::HintMatl,
+            BORDER_TO_HINTS_FG_RATIO,
         },
         AppState,
     },
@@ -21,15 +22,17 @@ impl Plugin for TopHintsPlugin {
     }
 }
 
-#[derive(Component, Deref)]
-pub struct TopHint(pub usize);
+#[derive(Component)]
+pub struct TopHint {
+    pub index: usize,
+}
 
 pub fn draw_top_hints(
     cell_count: Res<CellCount>,
     hint_bg: Single<(Entity, &Transform), With<TopHintBg>>,
     mut commands: Commands,
     mut mesh: ResMut<Assets<Mesh>>,
-    mut material: ResMut<Assets<ColorMaterial>>,
+    matl: Res<HintMatl>,
 ) {
     let n = cell_count.ncol.max(cell_count.nrow);
     let left_of_board = -0.5;
@@ -43,9 +46,9 @@ pub fn draw_top_hints(
         / n as f32;
     for x in 0..cell_count.ncol {
         commands.spawn((
-            TopHint(x),
+            TopHint { index: x },
             Mesh2d(mesh.add(Rectangle::default())),
-            MeshMaterial2d(material.add(Color::srgb_from_array(HINTS_FG_COLOR))),
+            MeshMaterial2d(matl.empty.clone()),
             Transform::from_translation(Vec3::new(
                 left_of_board + (border_size + fg_size / 2.) + (border_size + fg_size) * x as f32,
                 0. - (hint_bg.1.scale.x * border_size) * 1.5,

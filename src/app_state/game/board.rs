@@ -1,7 +1,7 @@
 pub mod bg;
 pub mod cells;
-pub mod hints;
 pub mod divider;
+pub mod hints;
 
 use bevy::prelude::*;
 use bg::BgPlugin;
@@ -26,12 +26,14 @@ pub const HORI_MARGIN_RATIO: (f32, f32) = (1., 1.); //9:1
 pub const VERT_MARGIN_RATIO: (f32, f32) = (1., 1.); //9:1
 
 pub const CELL_EMPTY_COLOR: [f32; 3] = [1., 1., 1.];
+pub const CELL_HIGHLIGHT_COLOR: [f32; 3] = [1., 1., 0.74];
 pub const CELL_FILLED_COLOR: [f32; 3] = [0.12, 0.12, 0.18];
 pub const CELL_CROSSED_COLOR: [f32; 3] = [1., 0.22, 0.26];
 pub const CELL_SOLVED_COLOR: [f32; 3] = [0.4, 1., 0.5];
 pub const BORDER_TO_CELL_FG_RATIO: (f32, f32) = (1., 20.); //1:20
 
-pub const HINTS_FG_COLOR: [f32; 3] = [1., 1., 1.];
+pub const HINTS_FG_EMPTY_COLOR: [f32; 3] = [1., 1., 1.];
+pub const HINTS_FG_HIGHLIGHT_COLOR: [f32; 3] = [1., 1., 0.74];
 pub const BORDER_TO_HINTS_FG_RATIO: (f32, f32) = (1., 20.); //1:20
 
 pub const HINT_BG_COLOR: [f32; 3] = [0.5, 0.51, 0.59];

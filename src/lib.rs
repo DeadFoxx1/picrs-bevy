@@ -4,9 +4,9 @@ use picrs_lib::table::Table;
 use crate::app_state::StatePlugin;
 mod app_state;
 
-const START_NROW: usize = 5;
-const START_NCOL: usize = 5;
-const START_FILL: usize = 15;
+const START_NROW: usize = 20;
+const START_NCOL: usize = 20;
+const START_FILL: usize = 300;
 
 pub struct GamePlugin;
 impl Plugin for GamePlugin {
@@ -15,7 +15,7 @@ impl Plugin for GamePlugin {
             .insert_resource(CellCount {
                 nrow: START_NROW,
                 ncol: START_NCOL,
-                nfilled: START_FILL
+                nfilled: START_FILL,
             })
             .insert_resource(GameState(Table::new(START_NCOL, START_NROW, START_FILL)))
             .add_systems(Startup, init);
@@ -25,7 +25,7 @@ impl Plugin for GamePlugin {
 pub struct CellCount {
     nrow: usize,
     ncol: usize,
-    nfilled: usize
+    nfilled: usize,
 }
 
 #[derive(Resource, Deref, DerefMut)]

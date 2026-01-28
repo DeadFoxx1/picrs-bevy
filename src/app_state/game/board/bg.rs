@@ -42,6 +42,7 @@ pub fn draw_board_bg(
         Mesh2d(mesh.add(Rectangle::default())),
         MeshMaterial2d(material.add(Color::srgb_from_array(GRID_BG_COLOR))),
     ));
+
     commands.spawn((
         GameComponent,
         TopHintBg,

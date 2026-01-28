@@ -36,7 +36,7 @@ fn draw_text(
 ) {
     let font = asset_server.load("font/MinecraftTen-VGORe.ttf");
     let font_size = 100.;
-    for (entity, index, transform) in top_hints.iter() {
+    for (entity, hint, transform) in top_hints.iter() {
         commands.spawn((
             TopHintText,
             ChildOf(entity),
@@ -46,7 +46,7 @@ fn draw_text(
                 3.,
             )),
             Text2d::new(
-                game_state.columns[index.0]
+                game_state.columns[hint.index]
                     .hints
                     .clone()
                     .into_iter()
@@ -58,7 +58,7 @@ fn draw_text(
             TextLayout::new(Justify::Center, LineBreak::AnyCharacter),
         ));
     }
-    for (entity, index, transform) in left_hints.iter() {
+    for (entity, hint, transform) in left_hints.iter() {
         commands.spawn((
             LeftHintText,
             ChildOf(entity),
@@ -68,7 +68,7 @@ fn draw_text(
                 3.,
             )),
             Text2d::new(
-                game_state.rows[index.0]
+                game_state.rows[hint.index]
                     .hints
                     .clone()
                     .into_iter()

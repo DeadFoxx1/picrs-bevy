@@ -6,9 +6,9 @@ use crate::{
         game::{
             board::{
                 bg::{draw_board_bg, GridBg},
-                CELL_SOLVED_COLOR,
+                CELL_HIGHLIGHT_COLOR, CELL_SOLVED_COLOR,
             },
-            events::{paint_cell, toggle_cursor},
+            events::cells::{highlight_cursor, paint_cell, toggle_cursor},
         },
         AppState,
     },
@@ -31,14 +31,17 @@ pub enum CellState {
     Empty,
     Crossed,
 }
+
 #[derive(Component)]
 pub struct Cell {
     pub cell_state: CellState,
     pub coords: (usize, usize),
 }
+
 #[derive(Resource)]
 pub struct CellMatl {
     pub empty: Handle<ColorMaterial>,
+    pub highlight: Handle<ColorMaterial>,
     pub crossed: Handle<ColorMaterial>,
     pub filled: Handle<ColorMaterial>,
     pub green: Handle<ColorMaterial>,
@@ -46,11 +49,13 @@ pub struct CellMatl {
 impl CellMatl {
     pub fn init(mut commands: Commands, mut material: ResMut<Assets<ColorMaterial>>) {
         let empty = material.add(Color::srgb_from_array(CELL_EMPTY_COLOR));
+        let highlight = material.add(Color::srgb_from_array(CELL_HIGHLIGHT_COLOR));
         let crossed = material.add(Color::srgb_from_array(CELL_CROSSED_COLOR));
         let filled = material.add(Color::srgb_from_array(CELL_FILLED_COLOR));
         let green = material.add(Color::srgb_from_array(CELL_SOLVED_COLOR));
         let cell_matl = CellMatl {
             empty,
+            highlight,
             crossed,
             filled,
             green,
@@ -103,7 +108,8 @@ fn draw_board_cells(
                     ChildOf(*board_bg),
                 ))
                 .observe(toggle_cursor)
-                .observe(paint_cell);
+                .observe(paint_cell)
+                .observe(highlight_cursor);
         }
     }
 }
